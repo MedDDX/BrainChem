@@ -1,11 +1,10 @@
 :root {
-  --bg: #0f172a;
-  --panel: #111827;
-  --text: #e5e7eb;
-  --muted: #9ca3af;
-  --accent: #60a5fa;
-  --accent-strong: #3b82f6;
-  --border: #1f2937;
+  --bg: #f8fafc;
+  --panel: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+  --border: #e2e8f0;
+  --accent: #2563eb;
 }
 
 * {
@@ -14,75 +13,52 @@
 
 body {
   margin: 0;
-  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
-  background: radial-gradient(circle at 20% 20%, rgba(96, 165, 250, 0.15), transparent 25%),
-    radial-gradient(circle at 80% 0%, rgba(16, 185, 129, 0.1), transparent 20%),
-    var(--bg);
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: var(--bg);
   color: var(--text);
   min-height: 100vh;
   line-height: 1.6;
 }
 
 .container {
-  width: min(1100px, 92vw);
+  width: min(1040px, 92vw);
   margin: 0 auto;
 }
 
-header {
-  padding: 3rem 0 2rem;
+.hero {
+  padding: 2.5rem 0 1.5rem;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 0 0 0.4rem;
 }
 
 h1 {
-  margin: 0 0 0.5rem;
-  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  margin: 0;
+  font-size: clamp(1.9rem, 3vw, 2.4rem);
 }
 
-p {
+.lede {
+  max-width: 680px;
   color: var(--muted);
+  margin-top: 0.5rem;
 }
 
-.actions {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  margin-top: 1rem;
-}
-
-.button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.65rem 1rem;
-  border-radius: 0.5rem;
-  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-  color: #0b1224;
-  text-decoration: none;
-  font-weight: 600;
-  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.25);
-  transition: transform 150ms ease, box-shadow 150ms ease, filter 150ms ease;
-}
-
-.button.secondary {
-  background: transparent;
-  color: var(--text);
-  border: 1px solid var(--border);
-  box-shadow: none;
-}
-
-.button:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.05);
-  box-shadow: 0 14px 35px rgba(59, 130, 246, 0.35);
+main {
+  padding: 0 0 2rem;
 }
 
 .panel {
-  background: rgba(17, 24, 39, 0.7);
+  background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 1rem;
-  padding: 1.5rem;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
   margin-bottom: 1rem;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 6px 24px rgba(15, 23, 42, 0.06);
 }
 
 .panel-header {
@@ -95,75 +71,58 @@ p {
 
 #search {
   flex: 1;
-  min-width: 220px;
-  background: #0b1224;
+  min-width: 240px;
   border: 1px solid var(--border);
-  border-radius: 0.65rem;
+  border-radius: 0.6rem;
+  padding: 0.7rem 0.9rem;
+  font-size: 1rem;
   color: var(--text);
-  padding: 0.65rem 0.85rem;
+  background: #f8fafc;
+}
+
+#search:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1rem;
   margin-top: 1rem;
 }
 
-.card {
-  background: linear-gradient(160deg, rgba(17, 24, 39, 0.85), rgba(10, 12, 26, 0.95));
-  border: 1px solid var(--border);
-  border-radius: 0.85rem;
-  padding: 1rem;
-  display: grid;
-  gap: 0.25rem;
-  transition: transform 150ms ease, box-shadow 150ms ease;
-}
-
-.card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
-}
-
-.card h3 {
-  margin: 0 0 0.1rem;
-}
-
-.card small {
+.empty {
   color: var(--muted);
 }
 
-.card .smiles {
-  font-family: "SFMono-Regular", Consolas, monospace;
-  background: #0b1224;
+.card {
+  background: #ffffff;
   border: 1px solid var(--border);
-  border-radius: 0.45rem;
-  padding: 0.35rem 0.5rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  display: grid;
+  gap: 0.4rem;
+  box-shadow: inset 0 1px 0 #f8fafc;
 }
 
-.card .smiles a {
-  color: var(--accent);
-  text-decoration: none;
-}
-
-.card .smiles a:hover {
-  text-decoration: underline;
-}
-
-.info ol {
+.card h3 {
   margin: 0;
-  padding-left: 1.25rem;
+  font-size: 1.1rem;
 }
 
-.info li + li {
-  margin-top: 0.4rem;
+.card small,
+.card p {
+  margin: 0;
+  color: var(--muted);
 }
 
-.hint {
-  margin-top: 0.75rem;
+.molecule {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: #f8fafc;
 }
 
 #status {
@@ -171,7 +130,7 @@ p {
   color: var(--muted);
 }
 
-footer {
+.footer {
   padding: 1.5rem 0 2rem;
   color: var(--muted);
 }
