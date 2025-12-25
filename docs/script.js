@@ -4,6 +4,7 @@ const searchInput = document.getElementById("search");
 
 const CHEMICALS_PATH = "chemicals/chemicals.json";
 let chemicals = [];
+const drawer = new SmilesDrawer.Drawer({ width: 260, height: 180, padding: 8 });
 
 async function loadChemicals() {
   statusEl.textContent = "Loading chemicals...";
@@ -34,14 +35,37 @@ function renderCards(list) {
       <h3>${item.name}</h3>
       <small>${item.formula || "Unknown formula"}</small>
       <p>${item.description || "No description provided."}</p>
-      <div class="smiles">
-        <span>SMILES:</span>
-        <a href="https://smilesdrawer.surge.sh?smiles=${encodeURIComponent(item.smiles)}" target="_blank" rel="noreferrer">${item.smiles}</a>
-      </div>
-      ${item.notes ? `<small>${item.notes}</small>` : ""}
     `;
+
+    const canvas = document.createElement("canvas");
+    canvas.width = 260;
+    canvas.height = 180;
+    canvas.className = "molecule";
+    canvas.setAttribute("aria-label", `Structure of ${item.name}`);
+    card.appendChild(canvas);
+
+    if (item.notes) {
+      const notes = document.createElement("small");
+      notes.textContent = item.notes;
+      card.appendChild(notes);
+    }
+
+    drawMolecule(canvas, item.smiles, item.name);
     cardsContainer.appendChild(card);
   });
+}
+
+function drawMolecule(canvas, smiles, label) {
+  SmilesDrawer.parse(
+    smiles,
+    (tree) => drawer.draw(tree, canvas, "light"),
+    () => {
+      const fallback = document.createElement("p");
+      fallback.className = "empty";
+      fallback.textContent = `Unable to render ${label}.`;
+      canvas.replaceWith(fallback);
+    }
+  );
 }
 
 function filterChemicals(event) {
