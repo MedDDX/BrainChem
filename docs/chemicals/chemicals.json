@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Water",
+    "formula": "H2O",
+    "smiles": "O",
+    "description": "Universal solvent used throughout the examples for testing molecule rendering.",
+    "notes": "Try with: python draw_smiles.py \"O\""
+  },
+  {
+    "name": "Acetone",
+    "formula": "C3H6O",
+    "smiles": "CC(=O)C",
+    "description": "A polar aprotic solvent that is easy to draw and useful in many organic labs.",
+    "notes": "Try with: python draw_smiles.py \"CC(=O)C\""
+  },
+  {
+    "name": "Ethanol",
+    "formula": "C2H6O",
+    "smiles": "CCO",
+    "description": "A simple alcohol that demonstrates heteroatoms and branching in SMILES.",
+    "notes": "Try with: python draw_smiles.py \"CCO\""
+  }
+]

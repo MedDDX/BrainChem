@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chemistry Draw | GitHub Pages</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>Chemistry Draw: GitHub Pages Gallery</h1>
+        <p>
+          This static site is served from the <code>docs/</code> folder and reads
+          chemical data from <code>docs/chemicals/</code>. Edit the JSON in the
+          repository to add more examples, then push to deploy with GitHub Pages.
+        </p>
+        <div class="actions">
+          <a class="button" href="https://github.com/" target="_blank" rel="noreferrer">Visit GitHub</a>
+          <a class="button secondary" href="../README.md">View repository README</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Available chemicals</h2>
+          <input
+            id="search"
+            type="search"
+            placeholder="Search by name, formula, or SMILES"
+            aria-label="Search chemicals"
+          />
+        </div>
+        <div id="status" role="status" aria-live="polite"></div>
+        <div id="cards" class="cards" aria-live="polite"></div>
+      </section>
+
+      <section class="panel info">
+        <h2>How to extend the site</h2>
+        <ol>
+          <li>Edit <code>docs/chemicals/chemicals.json</code> to add new entries.</li>
+          <li>
+            Optional: use <code>draw_smiles.py</code> to generate new images and
+            commit them into <code>docs/chemicals/</code> for static hosting.
+          </li>
+          <li>Push to the repository. The GitHub Pages workflow will deploy automatically.</li>
+        </ol>
+        <p class="hint">
+          Each card links the SMILES string so you can quickly run
+          <code>python draw_smiles.py &lt;smiles&gt;</code> to generate a PNG locally.
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        <small>
+          Built for GitHub Pages using only static assets from this repository.
+        </small>
+      </div>
+    </footer>
+    <script src="script.js"></script>
+  </body>
+</html>
