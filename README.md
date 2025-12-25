@@ -2,15 +2,6 @@
 
 Small helper script to render SMILES input into a 2D PNG molecule drawing using RDKit.
 
-## GitHub Pages chemicals viewer
-
-The repository also exposes a small static site via GitHub Pages (served from the `docs/`
-folder) that lists common lab chemicals and their SMILES strings. Open `docs/index.html`
-locally or visit the GitHub Pages URL for the repository to browse the current list.
-
-Chemical data lives in `chemicals/chemicals.json`. Add new entries there to extend the
-page without changing any frontend code.
-
 ## Setup
 Install RDKit from the Ubuntu repositories (already installed in this environment):
 
