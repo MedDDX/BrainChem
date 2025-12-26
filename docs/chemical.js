@@ -2,8 +2,7 @@ const params = new URLSearchParams(window.location.search);
 const chemicalId = params.get("id");
 const statusEl = document.getElementById("status");
 const flowContent = document.getElementById("flow-content");
-const flowGrid = document.getElementById("flow-grid");
-const flowEdges = document.getElementById("flow-edges");
+const flowTrack = document.getElementById("flow-track");
 const titleEl = document.getElementById("page-title");
 const subtitleEl = document.getElementById("page-subtitle");
 const flowTitleEl = document.getElementById("flow-title");
@@ -62,63 +61,49 @@ function renderFlowchart(flowchart) {
     return;
   }
 
-  const nodeMap = new Map();
+  const nodeMap = new Map(flowchart.nodes.map((node) => [node.id, node]));
+  const paths = buildTopology(flowchart.nodes, flowchart.edges || []);
 
-  const maxCol = Math.max(...flowchart.nodes.map((node) => node.col || 1));
-  flowGrid.style.gridTemplateColumns = `repeat(${maxCol}, minmax(180px, 1fr))`;
-  flowGrid.innerHTML = "";
+  flowTrack.innerHTML = "";
 
-  flowchart.nodes.forEach((node) => {
-    nodeMap.set(node.id, node);
+  paths.forEach((path) => {
+    const lane = document.createElement("div");
+    lane.className = "flow-lane";
 
-    const card = document.createElement("article");
-    card.className = "node-card";
-    card.style.gridColumn = node.col;
-    card.style.gridRow = node.row;
-    card.dataset.nodeId = node.id;
-    card.title = `${node.title} — ${node.smiles}`;
+    path.forEach((entry, index) => {
+      const cell = document.createElement("div");
+      cell.className = "flow-cell";
+      const card = createNodeCard(entry.node);
+      cell.appendChild(card);
+      lane.appendChild(cell);
 
-    const heading = document.createElement("h3");
-    heading.textContent = node.title;
-    card.appendChild(heading);
+      if (index < path.length - 1) {
+        const connector = document.createElement("div");
+        connector.className = "flow-connector";
+        connector.innerHTML = `
+          <span aria-hidden="true" class="arrow-icon">→</span>
+          <span class="change-chip">${entry.nextLabel || "Structural tweak"}</span>
+          <span aria-hidden="true" class="arrow-icon">→</span>
+        `;
+        connector.setAttribute(
+          "aria-label",
+          `Change from ${entry.node.title} to ${path[index + 1].node.title}: ${entry.nextLabel}`
+        );
+        lane.appendChild(connector);
+      } else {
+        const profile = document.createElement("p");
+        profile.className = "profile-summary profile-summary--inline";
+        const summary =
+          entry.node.profile || entry.node.detail || "Pharmacological profile not provided.";
+        profile.textContent = `Pharmacological profile: ${summary}`;
+        lane.appendChild(profile);
+      }
+    });
 
-    const canvas = document.createElement("canvas");
-    canvas.width = 180;
-    canvas.height = 140;
-    canvas.className = "molecule";
-    canvas.setAttribute("aria-label", `Structure of ${node.title}`);
-    drawMolecule(nodeDrawer, canvas, node.smiles, node.title);
-    card.appendChild(canvas);
-
-    const meta = document.createElement("div");
-    meta.className = "node-meta";
-
-    if (node.profile) {
-      const badge = document.createElement("span");
-      badge.className = "profile-pill";
-      badge.textContent = node.profile;
-      meta.appendChild(badge);
-    }
-
-    if (node.detail) {
-      const detail = document.createElement("p");
-      detail.className = "node-detail";
-      detail.textContent = node.detail;
-      meta.appendChild(detail);
-    }
-
-    card.appendChild(meta);
-
-    flowGrid.appendChild(card);
+    flowTrack.appendChild(lane);
   });
 
-  const edges = flowchart.edges || [];
-  requestAnimationFrame(() => {
-    drawEdges(edges);
-    renderRelationships(edges, nodeMap);
-  });
-
-  window.addEventListener("resize", () => drawEdges(edges));
+  renderRelationships(flowchart.edges || [], nodeMap);
 }
 
 function drawMolecule(drawer, canvas, smiles, label) {
@@ -132,94 +117,6 @@ function drawMolecule(drawer, canvas, smiles, label) {
       canvas.replaceWith(fallback);
     }
   );
-}
-
-function drawEdges(edges) {
-  const bounds = flowGrid.getBoundingClientRect();
-  flowEdges.innerHTML = "";
-  flowEdges.setAttribute("width", flowGrid.clientWidth);
-  flowEdges.setAttribute("height", flowGrid.clientHeight);
-
-  const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
-  const marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
-  marker.setAttribute("id", "arrowhead");
-  marker.setAttribute("markerWidth", "10");
-  marker.setAttribute("markerHeight", "7");
-  marker.setAttribute("refX", "8");
-  marker.setAttribute("refY", "3.5");
-  marker.setAttribute("orient", "auto");
-  const markerPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-  markerPath.setAttribute("d", "M0,0 L10,3.5 L0,7 Z");
-  markerPath.setAttribute("fill", "#4f46e5");
-  marker.appendChild(markerPath);
-  defs.appendChild(marker);
-
-  const filter = document.createElementNS("http://www.w3.org/2000/svg", "filter");
-  filter.setAttribute("id", "text-shadow");
-  const dropShadow = document.createElementNS("http://www.w3.org/2000/svg", "feDropShadow");
-  dropShadow.setAttribute("dx", "0");
-  dropShadow.setAttribute("dy", "0");
-  dropShadow.setAttribute("stdDeviation", "2");
-  dropShadow.setAttribute("flood-color", "#e2e8f0");
-  dropShadow.setAttribute("flood-opacity", "0.9");
-  filter.appendChild(dropShadow);
-  defs.appendChild(filter);
-  flowEdges.appendChild(defs);
-
-  edges.forEach((edge) => {
-    const from = flowGrid.querySelector(`[data-node-id="${edge.from}"]`);
-    const to = flowGrid.querySelector(`[data-node-id="${edge.to}"]`);
-    if (!from || !to) return;
-
-    const fromRect = from.getBoundingClientRect();
-    const toRect = to.getBoundingClientRect();
-    const start = {
-      x: fromRect.left - bounds.left + fromRect.width / 2,
-      y: fromRect.top - bounds.top + fromRect.height / 2,
-    };
-    const end = {
-      x: toRect.left - bounds.left + toRect.width / 2,
-      y: toRect.top - bounds.top + toRect.height / 2,
-    };
-
-    const curvature = Math.max(40, Math.abs(end.x - start.x) / 2);
-    const control1 = {
-      x: start.x + (end.x - start.x) / 2,
-      y: start.y - curvature,
-    };
-    const control2 = {
-      x: start.x + (end.x - start.x) / 2,
-      y: end.y - curvature,
-    };
-
-    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path.setAttribute(
-      "d",
-      `M ${start.x} ${start.y} C ${control1.x} ${control1.y}, ${control2.x} ${control2.y}, ${end.x} ${end.y}`
-    );
-    path.setAttribute("fill", "none");
-    path.setAttribute("stroke", "#0ea5e9");
-    path.setAttribute("stroke-width", "3");
-    path.setAttribute("marker-end", "url(#arrowhead)");
-    path.setAttribute("stroke-linecap", "round");
-    path.setAttribute("stroke-opacity", "0.9");
-    flowEdges.appendChild(path);
-
-    const pathLength = path.getTotalLength();
-    const midpoint = path.getPointAtLength(pathLength / 2);
-
-    if (edge.label) {
-      const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      label.setAttribute("x", midpoint.x);
-      label.setAttribute("y", midpoint.y - 6);
-      label.setAttribute("text-anchor", "middle");
-      label.setAttribute("fill", "#0f172a");
-      label.setAttribute("font-size", "12");
-      label.textContent = edge.label;
-      label.setAttribute("filter", "url(#text-shadow)");
-      flowEdges.appendChild(label);
-    }
-  });
 }
 
 function renderRelationships(edges, nodeMap) {
@@ -261,4 +158,93 @@ function renderRelationships(edges, nodeMap) {
     item.appendChild(profile);
     relationshipList.appendChild(item);
   });
+}
+
+function createNodeCard(node) {
+  const card = document.createElement("article");
+  card.className = "node-card node-card--compact";
+  card.title = `${node.title} — ${node.smiles}`;
+
+  const heading = document.createElement("h3");
+  heading.textContent = node.title;
+  card.appendChild(heading);
+
+  const canvas = document.createElement("canvas");
+  canvas.width = 180;
+  canvas.height = 140;
+  canvas.className = "molecule";
+  canvas.setAttribute("aria-label", `Structure of ${node.title}`);
+  drawMolecule(nodeDrawer, canvas, node.smiles, node.title);
+  card.appendChild(canvas);
+
+  const meta = document.createElement("div");
+  meta.className = "node-meta";
+
+  if (node.profile) {
+    const badge = document.createElement("span");
+    badge.className = "profile-pill";
+    badge.textContent = node.profile;
+    meta.appendChild(badge);
+  }
+
+  if (node.detail) {
+    const detail = document.createElement("p");
+    detail.className = "node-detail";
+    detail.textContent = node.detail;
+    meta.appendChild(detail);
+  }
+
+  card.appendChild(meta);
+  return card;
+}
+
+function buildTopology(nodes, edges) {
+  const nodeMap = new Map(nodes.map((node) => [node.id, node]));
+  const adjacency = new Map();
+  const indegree = new Map();
+
+  nodes.forEach((node) => {
+    adjacency.set(node.id, []);
+    indegree.set(node.id, 0);
+  });
+
+  edges.forEach((edge) => {
+    if (adjacency.has(edge.from)) {
+      adjacency.get(edge.from).push(edge);
+    }
+    if (indegree.has(edge.to)) {
+      indegree.set(edge.to, indegree.get(edge.to) + 1);
+    }
+  });
+
+  const roots = nodes.filter((node) => (indegree.get(node.id) || 0) === 0);
+  const startingNodes = roots.length ? roots : [nodes[0]];
+
+  const paths = [];
+  const visited = new Set();
+
+  function walk(node, trail) {
+    const outgoing = adjacency.get(node.id) || [];
+    if (!outgoing.length) {
+      paths.push(trail);
+      return;
+    }
+
+    outgoing.forEach((edge) => {
+      const nextNode = nodeMap.get(edge.to);
+      if (!nextNode || visited.has(`${node.id}-${edge.to}`)) return;
+      const nextTrail = [...trail];
+      nextTrail[nextTrail.length - 1].nextLabel = edge.label || "Structural tweak";
+      nextTrail.push({ node: nextNode, nextLabel: null });
+      visited.add(`${node.id}-${edge.to}`);
+      walk(nextNode, nextTrail);
+    });
+  }
+
+  startingNodes.forEach((start) => {
+    if (!start) return;
+    walk(start, [{ node: start, nextLabel: null }]);
+  });
+
+  return paths.length ? paths : [[{ node: nodes[0], nextLabel: null }]];
 }
