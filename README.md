@@ -2,7 +2,7 @@
 
 An interactive, static “chemical storyboard” that showcases related molecules and the structural tweaks that connect them. The project includes two pieces:
 
-* A GitHub Pages experience (served from `docs/`) that lists molecules, supports search, and opens a detailed flow chart where each node is a SMILES-drawn structure connected by labeled arrows that describe how one structure differs from the next.
+* A GitHub Pages experience (served from `docs/`) that lists molecules, supports search, and opens a detailed flow chart where each node is a SMILES-drawn structure connected by arrows and optional labels.
 * A companion CLI utility (`draw_smiles.py`) that turns any SMILES string into a 2D PNG using RDKit.
 
 ## Setup
@@ -50,7 +50,9 @@ Each entry in `docs/chemicals/chemicals.json` follows this rough shape:
         "title": "Base",
         "smiles": "CCO",
         "detail": "Optional text",
-        "profile": "Pharmacology or behavior badge"
+        "profile": "Pharmacology or behavior badge",
+        "col": 1,
+        "row": 1
       }
     ],
     "edges": [
@@ -60,7 +62,7 @@ Each entry in `docs/chemicals/chemicals.json` follows this rough shape:
 }
 ```
 
-- Nodes are automatically organized into flow lanes using the directed edges; each edge label becomes the "difference" chip between two molecules.
+- `col` and `row` position nodes on the flow-chart grid; edges connect nodes and may include a label.
 - `profile` surfaces the pharmacological or chemical behavior badge shown on each node and in the transformation callouts.
 - Add, edit, or remove objects to expand the gallery or tweak a specific storyboard.
 
