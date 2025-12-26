@@ -16,15 +16,17 @@
           "smiles": "NCCc1ccccc1",
           "detail": "Base scaffold for many sympathomimetics.",
           "row": 2,
-          "col": 1
+          "col": 1,
+          "profile": "Foundational stimulant backbone with weak adrenergic tone."
         },
         {
           "id": "amph",
           "title": "Amphetamine",
           "smiles": "CC(N)Cc1ccccc1",
-          "detail": "Adds \u03b1-methyl for metabolic stability.",
+          "detail": "Adds α-methyl for metabolic stability.",
           "row": 2,
-          "col": 2
+          "col": 2,
+          "profile": "Central stimulant; dopamine and norepinephrine releasing agent."
         },
         {
           "id": "meth",
@@ -32,31 +34,35 @@
           "smiles": "CNC(C)Cc1ccccc1",
           "detail": "N-methyl substitution boosts lipophilicity.",
           "row": 2,
-          "col": 3
+          "col": 3,
+          "profile": "Highly lipophilic monoamine releaser with rapid CNS entry."
         },
         {
           "id": "noreph",
           "title": "Norephedrine / PPA",
           "smiles": "N[C@H](CO)[C@H](C)c1ccccc1",
-          "detail": "\u03b2-hydroxyl improves polarity and oral use.",
+          "detail": "β-hydroxyl improves polarity and oral use.",
           "row": 3,
-          "col": 2
+          "col": 2,
+          "profile": "Peripheral sympathomimetic, common in decongestant formulations."
         },
         {
           "id": "eph",
           "title": "Ephedrine",
           "smiles": "CN[C@H](C)[C@H](O)c1ccccc1",
-          "detail": "N-methyl \u03b2-hydroxy pair gives mixed CNS/peripheral activity.",
+          "detail": "N-methyl β-hydroxy pair gives mixed CNS/peripheral activity.",
           "row": 3,
-          "col": 3
+          "col": 3,
+          "profile": "Mixed-acting sympathomimetic with bronchodilation and mild CNS stimulation."
         },
         {
           "id": "cath",
           "title": "Cathinone",
           "smiles": "CC(=O)C(N)Cc1ccccc1",
-          "detail": "\u03b2-keto slows BBB penetration versus amphetamine.",
+          "detail": "β-keto slows BBB penetration versus amphetamine.",
           "row": 1,
-          "col": 2
+          "col": 2,
+          "profile": "Mild stimulant; reduced potency from slower brain penetration."
         },
         {
           "id": "mcat",
@@ -64,7 +70,8 @@
           "smiles": "CNC(C)C(=O)Cc1ccccc1",
           "detail": "Adds N-methyl to cathinone for higher potency.",
           "row": 1,
-          "col": 3
+          "col": 3,
+          "profile": "Potent cathinone; dopamine/norepinephrine transporter substrate."
         },
         {
           "id": "mmc3",
@@ -72,7 +79,8 @@
           "smiles": "CNC(C)C(=O)Cc1cccc(C)c1",
           "detail": "Ring 3-methyl subtly shifts receptor profile.",
           "row": 1,
-          "col": 4
+          "col": 4,
+          "profile": "Entactogenic stimulant with moderate serotonin release."
         },
         {
           "id": "mmc4",
@@ -80,18 +88,51 @@
           "smiles": "CNC(C)C(=O)Cc1ccc(C)cc1",
           "detail": "Para methyl favors peripheral stimulation.",
           "row": 2,
-          "col": 4
+          "col": 4,
+          "profile": "Potent entactogen balancing dopamine and serotonin release."
         }
       ],
       "edges": [
-        { "from": "pea", "to": "amph", "label": "+\u03b1-methyl" },
-        { "from": "amph", "to": "meth", "label": "N-methyl" },
-        { "from": "amph", "to": "noreph", "label": "\u03b2-hydroxyl" },
-        { "from": "meth", "to": "eph", "label": "\u03b2-hydroxyl" },
-        { "from": "amph", "to": "cath", "label": "\u03b2-keto" },
-        { "from": "cath", "to": "mcat", "label": "N-methyl" },
-        { "from": "mcat", "to": "mmc3", "label": "Ring 3-methyl" },
-        { "from": "mcat", "to": "mmc4", "label": "Ring 4-methyl" }
+        {
+          "from": "pea",
+          "to": "amph",
+          "label": "+α-methyl"
+        },
+        {
+          "from": "amph",
+          "to": "meth",
+          "label": "N-methyl"
+        },
+        {
+          "from": "amph",
+          "to": "noreph",
+          "label": "β-hydroxyl"
+        },
+        {
+          "from": "meth",
+          "to": "eph",
+          "label": "β-hydroxyl"
+        },
+        {
+          "from": "amph",
+          "to": "cath",
+          "label": "β-keto"
+        },
+        {
+          "from": "cath",
+          "to": "mcat",
+          "label": "N-methyl"
+        },
+        {
+          "from": "mcat",
+          "to": "mmc3",
+          "label": "Ring 3-methyl"
+        },
+        {
+          "from": "mcat",
+          "to": "mmc4",
+          "label": "Ring 4-methyl"
+        }
       ]
     }
   },
@@ -112,7 +153,8 @@
           "smiles": "CCO",
           "detail": "Starting primary alcohol.",
           "row": 2,
-          "col": 1
+          "col": 1,
+          "profile": "CNS depressant; baseline polar solvent and fuel."
         },
         {
           "id": "acetaldehyde",
@@ -120,7 +162,8 @@
           "smiles": "CC=O",
           "detail": "First oxidation step.",
           "row": 2,
-          "col": 2
+          "col": 2,
+          "profile": "Reactive aldehyde intermediate with higher toxicity than ethanol."
         },
         {
           "id": "acetic_acid",
@@ -128,7 +171,8 @@
           "smiles": "CC(=O)O",
           "detail": "Fully oxidized carboxylic acid.",
           "row": 2,
-          "col": 3
+          "col": 3,
+          "profile": "Weak acid; antimicrobial and metabolic intermediate."
         },
         {
           "id": "acetyl_chloride",
@@ -136,7 +180,8 @@
           "smiles": "CC(=O)Cl",
           "detail": "Activated acyl donor.",
           "row": 1,
-          "col": 3
+          "col": 3,
+          "profile": "Highly reactive acylating agent; corrosive, not for pharmacologic use."
         },
         {
           "id": "acetamide",
@@ -144,7 +189,8 @@
           "smiles": "CC(=O)N",
           "detail": "Nucleophilic acyl substitution product.",
           "row": 3,
-          "col": 3
+          "col": 3,
+          "profile": "Stable amide; low acute pharmacological activity."
         },
         {
           "id": "ethyl_acetate",
@@ -152,7 +198,8 @@
           "smiles": "CCOC(=O)C",
           "detail": "Ester from alcohol + acid.",
           "row": 2,
-          "col": 4
+          "col": 4,
+          "profile": "Volatile solvent/ester with fruity aroma; limited bioactivity."
         },
         {
           "id": "sodium_acetate",
@@ -160,16 +207,41 @@
           "smiles": "[Na+].CC(=O)[O-]",
           "detail": "Salt form increases water solubility.",
           "row": 2,
-          "col": 5
+          "col": 5,
+          "profile": "Buffered salt; used in IV solutions and lab buffers."
         }
       ],
       "edges": [
-        { "from": "ethanol", "to": "acetaldehyde", "label": "Oxidation" },
-        { "from": "acetaldehyde", "to": "acetic_acid", "label": "Oxidation" },
-        { "from": "acetic_acid", "to": "acetyl_chloride", "label": "Thionyl chloride" },
-        { "from": "acetic_acid", "to": "acetamide", "label": "Amidation" },
-        { "from": "acetic_acid", "to": "ethyl_acetate", "label": "Fischer esterification" },
-        { "from": "acetic_acid", "to": "sodium_acetate", "label": "Neutralization" }
+        {
+          "from": "ethanol",
+          "to": "acetaldehyde",
+          "label": "Oxidation"
+        },
+        {
+          "from": "acetaldehyde",
+          "to": "acetic_acid",
+          "label": "Oxidation"
+        },
+        {
+          "from": "acetic_acid",
+          "to": "acetyl_chloride",
+          "label": "Thionyl chloride"
+        },
+        {
+          "from": "acetic_acid",
+          "to": "acetamide",
+          "label": "Amidation"
+        },
+        {
+          "from": "acetic_acid",
+          "to": "ethyl_acetate",
+          "label": "Fischer esterification"
+        },
+        {
+          "from": "acetic_acid",
+          "to": "sodium_acetate",
+          "label": "Neutralization"
+        }
       ]
     }
   }

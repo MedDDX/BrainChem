@@ -42,7 +42,12 @@
             <svg id="flow-edges" class="flow-edges"></svg>
             <div id="flow-grid" class="flow-grid" aria-label="Chemical flow chart"></div>
           </div>
-          <p class="flow-legend">Click any node to view its SMILES in the tooltip and see the drawn structure.</p>
+          <p class="flow-legend">
+            Lines draw the structural edits; the summary below spells out each
+            <strong>chemical → change → new chemical</strong> with the destination's
+            pharmacological profile.
+          </p>
+          <div id="connection-list" class="connection-list" aria-label="Chemical transitions"></div>
         </div>
       </section>
     </main>

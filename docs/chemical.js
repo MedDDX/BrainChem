@@ -9,6 +9,7 @@ const subtitleEl = document.getElementById("page-subtitle");
 const flowTitleEl = document.getElementById("flow-title");
 const flowSubtitleEl = document.getElementById("flow-subtitle");
 const mainStructure = document.getElementById("main-structure");
+const connectionList = document.getElementById("connection-list");
 
 const CHEMICALS_PATH = "chemicals/chemicals.json";
 const nodeDrawer = new SmilesDrawer.Drawer({ width: 180, height: 140, padding: 6 });
@@ -91,11 +92,19 @@ function renderFlowchart(flowchart) {
       card.appendChild(detail);
     }
 
+    if (node.profile) {
+      const profile = document.createElement("p");
+      profile.className = "node-meta";
+      profile.innerHTML = `<span class="pill">Profile</span><small>${node.profile}</small>`;
+      card.appendChild(profile);
+    }
+
     flowGrid.appendChild(card);
   });
 
   requestAnimationFrame(() => drawEdges(flowchart.edges || []));
   window.addEventListener("resize", () => drawEdges(flowchart.edges || []));
+  renderConnections(flowchart);
 }
 
 function drawMolecule(drawer, canvas, smiles, label) {
@@ -147,17 +156,18 @@ function drawEdges(edges) {
       x: toRect.left - bounds.left + toRect.width / 2,
       y: toRect.top - bounds.top + toRect.height / 2,
     };
+    const deltaX = (end.x - start.x) * 0.25;
+    const deltaY = (end.y - start.y) * 0.25;
+    const pathString = `M ${start.x} ${start.y} C ${start.x + deltaX} ${start.y}, ${end.x - deltaX} ${end.y}, ${end.x} ${end.y}`;
 
-    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-    line.setAttribute("x1", start.x);
-    line.setAttribute("y1", start.y);
-    line.setAttribute("x2", end.x);
-    line.setAttribute("y2", end.y);
-    line.setAttribute("stroke", "#2563eb");
-    line.setAttribute("stroke-width", "2");
-    line.setAttribute("marker-end", "url(#arrowhead)");
-    line.setAttribute("stroke-linecap", "round");
-    flowEdges.appendChild(line);
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", pathString);
+    path.setAttribute("fill", "none");
+    path.setAttribute("stroke", "#2563eb");
+    path.setAttribute("stroke-width", "2.5");
+    path.setAttribute("marker-end", "url(#arrowhead)");
+    path.setAttribute("stroke-linecap", "round");
+    flowEdges.appendChild(path);
 
     if (edge.label) {
       const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -166,10 +176,46 @@ function drawEdges(edges) {
       label.setAttribute("x", midX);
       label.setAttribute("y", midY - 6);
       label.setAttribute("text-anchor", "middle");
-      label.setAttribute("fill", "#0f172a");
-      label.setAttribute("font-size", "12");
+      label.setAttribute("class", "edge-label");
       label.textContent = edge.label;
       flowEdges.appendChild(label);
     }
+  });
+}
+
+function renderConnections(flowchart) {
+  if (!connectionList) return;
+  connectionList.innerHTML = "";
+
+  if (!flowchart.edges?.length) {
+    connectionList.innerHTML = '<p class="empty">No annotated transitions found.</p>';
+    return;
+  }
+
+  flowchart.edges.forEach((edge) => {
+    const fromNode = flowchart.nodes.find((node) => node.id === edge.from);
+    const toNode = flowchart.nodes.find((node) => node.id === edge.to);
+    if (!fromNode || !toNode) return;
+
+    const card = document.createElement("article");
+    card.className = "connection-card";
+
+    const line = document.createElement("div");
+    line.className = "connection-line";
+    line.innerHTML = `
+      <span class="pill">${fromNode.title}</span>
+      <span class="connection-arrow">${edge.label || "Change"} →</span>
+      <span class="pill accent">${toNode.title}</span>
+    `;
+
+    const profile = document.createElement("p");
+    profile.className = "connection-profile";
+    profile.innerHTML = `<strong>Pharmacological profile:</strong> ${
+      toNode.profile || toNode.detail || "No profile provided."
+    }`;
+
+    card.appendChild(line);
+    card.appendChild(profile);
+    connectionList.appendChild(card);
   });
 }

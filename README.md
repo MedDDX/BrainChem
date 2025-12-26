@@ -29,6 +29,9 @@ The static site reads molecules from `docs/chemicals/chemicals.json` and offers:
 - A searchable gallery that matches name, formula, or SMILES.
 - Clickable cards that open a dedicated flow-chart page for each molecule.
 - SMILES-drawn canvases for every node, with graceful fallbacks when parsing fails.
+- Curved, annotated flow links plus a per-edge callout strip that spells out
+  **chemical → modification → new chemical** alongside the destination's
+  pharmacological/behavioral profile.
 
 ### Editing the dataset
 Each entry in `docs/chemicals/chemicals.json` follows this rough shape:
@@ -45,7 +48,15 @@ Each entry in `docs/chemicals/chemicals.json` follows this rough shape:
     "title": "Optional heading for the flow view",
     "subtitle": "Optional subheading",
     "nodes": [
-      { "id": "start", "title": "Base", "smiles": "CCO", "detail": "Optional text", "col": 1, "row": 1 }
+      {
+        "id": "start",
+        "title": "Base",
+        "smiles": "CCO",
+        "detail": "Optional text",
+        "profile": "Optional pharmacological/behavioral summary",
+        "col": 1,
+        "row": 1
+      }
     ],
     "edges": [
       { "from": "start", "to": "variant", "label": "methylated" }
