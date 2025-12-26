@@ -1,10 +1,12 @@
 :root {
-  --bg: #f8fafc;
+  --bg: #eef2ff;
   --panel: #ffffff;
   --text: #0f172a;
   --muted: #475569;
   --border: #e2e8f0;
-  --accent: #2563eb;
+  --accent: #4f46e5;
+  --accent-soft: rgba(79, 70, 229, 0.08);
+  --glow: 0 24px 60px rgba(79, 70, 229, 0.12);
 }
 
 * {
@@ -14,7 +16,7 @@
 body {
   margin: 0;
   font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
-  background: var(--bg);
+  background: radial-gradient(circle at 20% 20%, #f5f3ff 0, #eef2ff 25%, #e2e8f0 60%, #edf2f7 100%);
   color: var(--text);
   min-height: 100vh;
   line-height: 1.6;
@@ -27,6 +29,8 @@ body {
 
 .hero {
   padding: 2.5rem 0 1.5rem;
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.12), rgba(14, 165, 233, 0.08));
+  border-bottom: 1px solid var(--border);
 }
 
 .eyebrow {
@@ -55,10 +59,10 @@ main {
 .panel {
   background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 0.75rem;
-  padding: 1.25rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 6px 24px rgba(15, 23, 42, 0.06);
+  border-radius: 0.9rem;
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--glow);
 }
 
 .panel-header {
@@ -99,11 +103,17 @@ main {
 .card {
   background: #ffffff;
   border: 1px solid var(--border);
-  border-radius: 0.75rem;
+  border-radius: 0.85rem;
   padding: 1rem;
   display: grid;
   gap: 0.6rem;
-  box-shadow: inset 0 1px 0 #f8fafc;
+  box-shadow: inset 0 1px 0 #f8fafc, 0 12px 32px rgba(15, 23, 42, 0.06);
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.12);
 }
 
 .card h3 {
@@ -126,9 +136,11 @@ main {
   width: 100%;
   height: auto;
   border: 1px solid var(--border);
-  border-radius: 0.5rem;
+  border-radius: 0.65rem;
   background: #f8fafc;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
+
 
 .chip {
   display: inline-flex;
@@ -137,11 +149,12 @@ main {
   width: fit-content;
   padding: 0.35rem 0.7rem;
   border-radius: 999px;
-  background: rgba(37, 99, 235, 0.08);
+  background: var(--accent-soft);
   color: var(--accent);
   text-decoration: none;
   font-weight: 600;
-  border: 1px solid rgba(37, 99, 235, 0.25);
+  border: 1px solid rgba(79, 70, 229, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .chip:hover,
@@ -186,12 +199,13 @@ main {
 .flow-grid {
   display: grid;
   gap: 1rem;
-  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  background: radial-gradient(circle at top left, #ffffff 0, #f8fafc 40%, #eef2ff 100%);
   border: 1px solid var(--border);
-  border-radius: 0.75rem;
+  border-radius: 0.9rem;
   padding: 1.25rem;
   position: relative;
   z-index: 1;
+  box-shadow: inset 0 1px 0 #fff, 0 12px 28px rgba(15, 23, 42, 0.08);
 }
 
 .flow-edges {
@@ -206,12 +220,13 @@ main {
 .node-card {
   background: #ffffff;
   border: 1px solid var(--border);
-  border-radius: 0.75rem;
-  padding: 0.75rem;
+  border-radius: 0.85rem;
+  padding: 0.85rem;
   display: grid;
   gap: 0.4rem;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.1);
   position: relative;
+  transition: transform 120ms ease, box-shadow 120ms ease;
 }
 
 .node-card h3 {
@@ -225,8 +240,95 @@ main {
   color: var(--muted);
 }
 
+.node-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.16);
+}
+
+.node-meta {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.profile-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.5rem;
+  background: rgba(14, 165, 233, 0.12);
+  color: #0ea5e9;
+  font-weight: 600;
+  width: fit-content;
+  border: 1px solid rgba(14, 165, 233, 0.3);
+}
+
+.node-detail {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
 .flow-legend {
   margin-top: 0.5rem;
+  color: var(--muted);
+}
+
+.flow-relationships {
+  margin-top: 1.5rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.flow-relationships__header h3 {
+  margin: 0 0 0.35rem;
+}
+
+.relationship-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.relationship-card {
+  border: 1px solid var(--border);
+  border-radius: 0.85rem;
+  padding: 0.85rem 1rem;
+  background: #fff;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+  display: grid;
+  gap: 0.4rem;
+}
+
+.relationship-line {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.node-chip {
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  background: #f8fafc;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.node-name {
+  font-weight: 700;
+}
+
+.arrow-chip {
+  justify-self: center;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(79, 70, 229, 0.1);
+  color: var(--accent);
+  font-weight: 700;
+  border: 1px solid rgba(79, 70, 229, 0.25);
+}
+
+.profile-summary {
+  margin: 0;
   color: var(--muted);
 }
 
