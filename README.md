@@ -1,6 +1,9 @@
-# Chemistry-draw
+# BrainChem
 
-Small helper script to render SMILES input into a 2D PNG molecule drawing using RDKit.
+An interactive, static “chemical storyboard” that showcases related molecules and the structural tweaks that connect them. The project includes two pieces:
+
+* A GitHub Pages experience (served from `docs/`) that lists molecules, supports search, and opens a detailed flow chart where each node is a SMILES-drawn structure connected by arrows and optional labels.
+* A companion CLI utility (`draw_smiles.py`) that turns any SMILES string into a 2D PNG using RDKit.
 
 ## Setup
 Install RDKit from the Ubuntu repositories (already installed in this environment):
@@ -10,8 +13,8 @@ apt-get update
 apt-get install -y python3-rdkit
 ```
 
-## Usage
-Run the script with a SMILES string. The default output file is `molecule.png` at 400×400 px.
+## CLI usage
+Render a SMILES string to PNG. The default output is `molecule.png` at 400×400 px.
 
 ```bash
 python draw_smiles.py "CCO"          # Saves molecule.png in the current directory
@@ -20,15 +23,45 @@ python draw_smiles.py "c1ccccc1" -o benzene.png -s 500
 
 If the SMILES string is invalid, the script exits with an error message.
 
-## GitHub Pages site
-A static gallery hosted from `docs/` lists example chemicals pulled from `docs/chemicals/chemicals.json`.
+## GitHub Pages experience
+The static site reads molecules from `docs/chemicals/chemicals.json` and offers:
 
-- Add or edit entries in the JSON file to change the gallery content.
-- Push changes to `main` or `work` to trigger the GitHub Actions workflow that deploys the site.
-- Preview locally with:
+- A searchable gallery that matches name, formula, or SMILES.
+- Clickable cards that open a dedicated flow-chart page for each molecule.
+- SMILES-drawn canvases for every node, with graceful fallbacks when parsing fails.
+
+### Editing the dataset
+Each entry in `docs/chemicals/chemicals.json` follows this rough shape:
+
+```json
+{
+  "id": "unique-id",
+  "name": "Display name",
+  "formula": "C2H6O",
+  "smiles": "CCO",
+  "description": "Short overview.",
+  "notes": "Optional footnote under the card.",
+  "flowchart": {
+    "title": "Optional heading for the flow view",
+    "subtitle": "Optional subheading",
+    "nodes": [
+      { "id": "start", "title": "Base", "smiles": "CCO", "detail": "Optional text", "col": 1, "row": 1 }
+    ],
+    "edges": [
+      { "from": "start", "to": "variant", "label": "methylated" }
+    ]
+  }
+}
+```
+
+- `col` and `row` position nodes on the flow-chart grid; edges connect nodes and may include a label.
+- Add, edit, or remove objects to expand the gallery or tweak a specific storyboard.
+
+### Preview locally
+Serve the static files from `docs/` and open the site in your browser:
 
 ```bash
 python -m http.server --directory docs 8000
 ```
 
-Then open http://localhost:8000 in your browser.
+Visit http://localhost:8000 for the gallery, and click any card to view its flow chart.
