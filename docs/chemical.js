@@ -2,8 +2,7 @@ const params = new URLSearchParams(window.location.search);
 const chemicalId = params.get("id");
 const statusEl = document.getElementById("status");
 const flowContent = document.getElementById("flow-content");
-const flowGrid = document.getElementById("flow-grid");
-const flowEdges = document.getElementById("flow-edges");
+const flowSequence = document.getElementById("flow-sequence");
 const titleEl = document.getElementById("page-title");
 const subtitleEl = document.getElementById("page-subtitle");
 const flowTitleEl = document.getElementById("flow-title");
@@ -63,62 +62,38 @@ function renderFlowchart(flowchart) {
   }
 
   const nodeMap = new Map();
-
-  const maxCol = Math.max(...flowchart.nodes.map((node) => node.col || 1));
-  flowGrid.style.gridTemplateColumns = `repeat(${maxCol}, minmax(180px, 1fr))`;
-  flowGrid.innerHTML = "";
-
-  flowchart.nodes.forEach((node) => {
-    nodeMap.set(node.id, node);
-
-    const card = document.createElement("article");
-    card.className = "node-card";
-    card.style.gridColumn = node.col;
-    card.style.gridRow = node.row;
-    card.dataset.nodeId = node.id;
-    card.title = `${node.title} — ${node.smiles}`;
-
-    const heading = document.createElement("h3");
-    heading.textContent = node.title;
-    card.appendChild(heading);
-
-    const canvas = document.createElement("canvas");
-    canvas.width = 180;
-    canvas.height = 140;
-    canvas.className = "molecule";
-    canvas.setAttribute("aria-label", `Structure of ${node.title}`);
-    drawMolecule(nodeDrawer, canvas, node.smiles, node.title);
-    card.appendChild(canvas);
-
-    const meta = document.createElement("div");
-    meta.className = "node-meta";
-
-    if (node.profile) {
-      const badge = document.createElement("span");
-      badge.className = "profile-pill";
-      badge.textContent = node.profile;
-      meta.appendChild(badge);
-    }
-
-    if (node.detail) {
-      const detail = document.createElement("p");
-      detail.className = "node-detail";
-      detail.textContent = node.detail;
-      meta.appendChild(detail);
-    }
-
-    card.appendChild(meta);
-
-    flowGrid.appendChild(card);
-  });
+  flowchart.nodes.forEach((node) => nodeMap.set(node.id, node));
 
   const edges = flowchart.edges || [];
-  requestAnimationFrame(() => {
-    drawEdges(edges);
-    renderRelationships(edges, nodeMap);
+  const orderedEdges = buildTopology(flowchart.nodes, edges);
+
+  flowSequence.innerHTML = "";
+
+  if (!orderedEdges.length) {
+    flowSequence.innerHTML = '<p class="empty">No transformations provided for this molecule.</p>';
+    renderRelationships([], nodeMap);
+    return;
+  }
+
+  orderedEdges.forEach((edge) => {
+    const fromNode = nodeMap.get(edge.from);
+    const toNode = nodeMap.get(edge.to);
+    if (!fromNode || !toNode) return;
+
+    const lane = document.createElement("div");
+    lane.className = "flow-lane";
+
+    lane.appendChild(createNodeCard(fromNode, "from"));
+    lane.appendChild(createArrow());
+    lane.appendChild(createChangeCard(edge, fromNode, toNode));
+    lane.appendChild(createArrow());
+    lane.appendChild(createNodeCard(toNode, "to"));
+    lane.appendChild(createProfileCallout(toNode));
+
+    flowSequence.appendChild(lane);
   });
 
-  window.addEventListener("resize", () => drawEdges(edges));
+  renderRelationships(orderedEdges, nodeMap);
 }
 
 function drawMolecule(drawer, canvas, smiles, label) {
@@ -134,92 +109,129 @@ function drawMolecule(drawer, canvas, smiles, label) {
   );
 }
 
-function drawEdges(edges) {
-  const bounds = flowGrid.getBoundingClientRect();
-  flowEdges.innerHTML = "";
-  flowEdges.setAttribute("width", flowGrid.clientWidth);
-  flowEdges.setAttribute("height", flowGrid.clientHeight);
+function createNodeCard(node, role) {
+  const card = document.createElement("article");
+  card.className = `node-card node-card--${role}`;
+  card.dataset.nodeId = node.id;
+  card.title = `${node.title} — ${node.smiles}`;
 
-  const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
-  const marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
-  marker.setAttribute("id", "arrowhead");
-  marker.setAttribute("markerWidth", "10");
-  marker.setAttribute("markerHeight", "7");
-  marker.setAttribute("refX", "8");
-  marker.setAttribute("refY", "3.5");
-  marker.setAttribute("orient", "auto");
-  const markerPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-  markerPath.setAttribute("d", "M0,0 L10,3.5 L0,7 Z");
-  markerPath.setAttribute("fill", "#4f46e5");
-  marker.appendChild(markerPath);
-  defs.appendChild(marker);
+  const heading = document.createElement("h3");
+  heading.textContent = node.title;
+  card.appendChild(heading);
 
-  const filter = document.createElementNS("http://www.w3.org/2000/svg", "filter");
-  filter.setAttribute("id", "text-shadow");
-  const dropShadow = document.createElementNS("http://www.w3.org/2000/svg", "feDropShadow");
-  dropShadow.setAttribute("dx", "0");
-  dropShadow.setAttribute("dy", "0");
-  dropShadow.setAttribute("stdDeviation", "2");
-  dropShadow.setAttribute("flood-color", "#e2e8f0");
-  dropShadow.setAttribute("flood-opacity", "0.9");
-  filter.appendChild(dropShadow);
-  defs.appendChild(filter);
-  flowEdges.appendChild(defs);
+  const canvas = document.createElement("canvas");
+  canvas.width = 180;
+  canvas.height = 140;
+  canvas.className = "molecule";
+  canvas.setAttribute("aria-label", `Structure of ${node.title}`);
+  drawMolecule(nodeDrawer, canvas, node.smiles, node.title);
+  card.appendChild(canvas);
+
+  const meta = document.createElement("div");
+  meta.className = "node-meta";
+
+  if (node.profile) {
+    const badge = document.createElement("span");
+    badge.className = "profile-pill";
+    badge.textContent = node.profile;
+    meta.appendChild(badge);
+  }
+
+  if (node.detail) {
+    const detail = document.createElement("p");
+    detail.className = "node-detail";
+    detail.textContent = node.detail;
+    meta.appendChild(detail);
+  }
+
+  card.appendChild(meta);
+  return card;
+}
+
+function createArrow() {
+  const arrow = document.createElement("div");
+  arrow.className = "flow-arrow";
+  arrow.setAttribute("aria-hidden", "true");
+  arrow.textContent = "→";
+  return arrow;
+}
+
+function createChangeCard(edge, fromNode, toNode) {
+  const change = document.createElement("article");
+  change.className = "change-card";
+
+  const label = document.createElement("p");
+  label.className = "change-label";
+  label.textContent = edge.label || "Structural change";
+
+  const detail = document.createElement("p");
+  detail.className = "change-detail";
+  detail.textContent = `Difference between ${fromNode.title} and ${toNode.title}`;
+
+  change.appendChild(label);
+  change.appendChild(detail);
+  return change;
+}
+
+function createProfileCallout(node) {
+  const profile = document.createElement("div");
+  profile.className = "profile-callout";
+
+  const heading = document.createElement("h4");
+  heading.textContent = "Pharmacological profile";
+  const description = document.createElement("p");
+  description.textContent = node.profile || node.detail || "Profile not provided.";
+
+  profile.appendChild(heading);
+  profile.appendChild(description);
+  return profile;
+}
+
+function buildTopology(nodes, edges) {
+  const incoming = new Map();
+  nodes.forEach((node) => incoming.set(node.id, 0));
 
   edges.forEach((edge) => {
-    const from = flowGrid.querySelector(`[data-node-id="${edge.from}"]`);
-    const to = flowGrid.querySelector(`[data-node-id="${edge.to}"]`);
-    if (!from || !to) return;
-
-    const fromRect = from.getBoundingClientRect();
-    const toRect = to.getBoundingClientRect();
-    const start = {
-      x: fromRect.left - bounds.left + fromRect.width / 2,
-      y: fromRect.top - bounds.top + fromRect.height / 2,
-    };
-    const end = {
-      x: toRect.left - bounds.left + toRect.width / 2,
-      y: toRect.top - bounds.top + toRect.height / 2,
-    };
-
-    const curvature = Math.max(40, Math.abs(end.x - start.x) / 2);
-    const control1 = {
-      x: start.x + (end.x - start.x) / 2,
-      y: start.y - curvature,
-    };
-    const control2 = {
-      x: start.x + (end.x - start.x) / 2,
-      y: end.y - curvature,
-    };
-
-    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path.setAttribute(
-      "d",
-      `M ${start.x} ${start.y} C ${control1.x} ${control1.y}, ${control2.x} ${control2.y}, ${end.x} ${end.y}`
-    );
-    path.setAttribute("fill", "none");
-    path.setAttribute("stroke", "#0ea5e9");
-    path.setAttribute("stroke-width", "3");
-    path.setAttribute("marker-end", "url(#arrowhead)");
-    path.setAttribute("stroke-linecap", "round");
-    path.setAttribute("stroke-opacity", "0.9");
-    flowEdges.appendChild(path);
-
-    const pathLength = path.getTotalLength();
-    const midpoint = path.getPointAtLength(pathLength / 2);
-
-    if (edge.label) {
-      const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      label.setAttribute("x", midpoint.x);
-      label.setAttribute("y", midpoint.y - 6);
-      label.setAttribute("text-anchor", "middle");
-      label.setAttribute("fill", "#0f172a");
-      label.setAttribute("font-size", "12");
-      label.textContent = edge.label;
-      label.setAttribute("filter", "url(#text-shadow)");
-      flowEdges.appendChild(label);
-    }
+    incoming.set(edge.to, (incoming.get(edge.to) ?? 0) + 1);
   });
+
+  const adjacency = new Map();
+  edges.forEach((edge) => {
+    const next = adjacency.get(edge.from) || [];
+    next.push(edge);
+    adjacency.set(edge.from, next);
+  });
+
+  const queue = [];
+  incoming.forEach((count, id) => {
+    if (count === 0) queue.push(id);
+  });
+
+  const ordered = [];
+  const seen = new Set();
+
+  while (queue.length) {
+    const current = queue.shift();
+    const outgoing = adjacency.get(current) || [];
+
+    outgoing.forEach((edge) => {
+      const key = `${edge.from}->${edge.to}-${edge.label || ""}`;
+      if (seen.has(key)) return;
+      seen.add(key);
+      ordered.push(edge);
+
+      const nextCount = (incoming.get(edge.to) || 0) - 1;
+      incoming.set(edge.to, nextCount);
+      if (nextCount === 0) queue.push(edge.to);
+    });
+  }
+
+  edges.forEach((edge) => {
+    const key = `${edge.from}->${edge.to}-${edge.label || ""}`;
+    if (!seen.has(key)) ordered.push(edge);
+  });
+
+  return ordered;
 }
 
 function renderRelationships(edges, nodeMap) {
