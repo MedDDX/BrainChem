@@ -15,6 +15,7 @@
           "title": "Phenethylamine",
           "smiles": "NCCc1ccccc1",
           "detail": "Base scaffold for many sympathomimetics.",
+          "profile": "Backbone with minimal direct pharmacology",
           "row": 2,
           "col": 1
         },
@@ -23,6 +24,7 @@
           "title": "Amphetamine",
           "smiles": "CC(N)Cc1ccccc1",
           "detail": "Adds \u03b1-methyl for metabolic stability.",
+          "profile": "CNS stimulant; DAT/NET releaser",
           "row": 2,
           "col": 2
         },
@@ -31,6 +33,7 @@
           "title": "Methamphetamine",
           "smiles": "CNC(C)Cc1ccccc1",
           "detail": "N-methyl substitution boosts lipophilicity.",
+          "profile": "High BBB penetration; potent CNS stimulant",
           "row": 2,
           "col": 3
         },
@@ -39,6 +42,7 @@
           "title": "Norephedrine / PPA",
           "smiles": "N[C@H](CO)[C@H](C)c1ccccc1",
           "detail": "\u03b2-hydroxyl improves polarity and oral use.",
+          "profile": "Peripheral adrenergic agonist; decongestant",
           "row": 3,
           "col": 2
         },
@@ -47,6 +51,7 @@
           "title": "Ephedrine",
           "smiles": "CN[C@H](C)[C@H](O)c1ccccc1",
           "detail": "N-methyl \u03b2-hydroxy pair gives mixed CNS/peripheral activity.",
+          "profile": "Mixed adrenergic agonist; bronchodilation",
           "row": 3,
           "col": 3
         },
@@ -55,6 +60,7 @@
           "title": "Cathinone",
           "smiles": "CC(=O)C(N)Cc1ccccc1",
           "detail": "\u03b2-keto slows BBB penetration versus amphetamine.",
+          "profile": "Mild stimulant with reduced central potency",
           "row": 1,
           "col": 2
         },
@@ -63,6 +69,7 @@
           "title": "Methcathinone",
           "smiles": "CNC(C)C(=O)Cc1ccccc1",
           "detail": "Adds N-methyl to cathinone for higher potency.",
+          "profile": "Strong dopaminergic/adrenergic stimulant",
           "row": 1,
           "col": 3
         },
@@ -71,6 +78,7 @@
           "title": "3-MMC",
           "smiles": "CNC(C)C(=O)Cc1cccc(C)c1",
           "detail": "Ring 3-methyl subtly shifts receptor profile.",
+          "profile": "Entactogenic stimulant; mixed monoamine action",
           "row": 1,
           "col": 4
         },
@@ -79,6 +87,7 @@
           "title": "4-MMC (mephedrone)",
           "smiles": "CNC(C)C(=O)Cc1ccc(C)cc1",
           "detail": "Para methyl favors peripheral stimulation.",
+          "profile": "Potent stimulant with serotonergic release",
           "row": 2,
           "col": 4
         }
@@ -111,6 +120,7 @@
           "title": "Ethanol",
           "smiles": "CCO",
           "detail": "Starting primary alcohol.",
+          "profile": "Solvent and CNS depressant at high doses",
           "row": 2,
           "col": 1
         },
@@ -119,6 +129,7 @@
           "title": "Acetaldehyde",
           "smiles": "CC=O",
           "detail": "First oxidation step.",
+          "profile": "Reactive intermediate; toxic metabolite",
           "row": 2,
           "col": 2
         },
@@ -127,6 +138,7 @@
           "title": "Acetic acid",
           "smiles": "CC(=O)O",
           "detail": "Fully oxidized carboxylic acid.",
+          "profile": "Weak acid; acetate donor",
           "row": 2,
           "col": 3
         },
@@ -135,6 +147,7 @@
           "title": "Acetyl chloride",
           "smiles": "CC(=O)Cl",
           "detail": "Activated acyl donor.",
+          "profile": "Highly reactive acylating agent",
           "row": 1,
           "col": 3
         },
@@ -143,6 +156,7 @@
           "title": "Acetamide",
           "smiles": "CC(=O)N",
           "detail": "Nucleophilic acyl substitution product.",
+          "profile": "Stable amide with low reactivity",
           "row": 3,
           "col": 3
         },
@@ -151,6 +165,7 @@
           "title": "Ethyl acetate",
           "smiles": "CCOC(=O)C",
           "detail": "Ester from alcohol + acid.",
+          "profile": "Volatile solvent; sweet odor",
           "row": 2,
           "col": 4
         },
@@ -159,6 +174,7 @@
           "title": "Sodium acetate",
           "smiles": "[Na+].CC(=O)[O-]",
           "detail": "Salt form increases water solubility.",
+          "profile": "Buffering agent; fully ionized",
           "row": 2,
           "col": 5
         }

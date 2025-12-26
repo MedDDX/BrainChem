@@ -45,7 +45,15 @@ Each entry in `docs/chemicals/chemicals.json` follows this rough shape:
     "title": "Optional heading for the flow view",
     "subtitle": "Optional subheading",
     "nodes": [
-      { "id": "start", "title": "Base", "smiles": "CCO", "detail": "Optional text", "col": 1, "row": 1 }
+      {
+        "id": "start",
+        "title": "Base",
+        "smiles": "CCO",
+        "detail": "Optional text",
+        "profile": "Pharmacology or behavior badge",
+        "col": 1,
+        "row": 1
+      }
     ],
     "edges": [
       { "from": "start", "to": "variant", "label": "methylated" }
@@ -55,6 +63,7 @@ Each entry in `docs/chemicals/chemicals.json` follows this rough shape:
 ```
 
 - `col` and `row` position nodes on the flow-chart grid; edges connect nodes and may include a label.
+- `profile` surfaces the pharmacological or chemical behavior badge shown on each node and in the transformation callouts.
 - Add, edit, or remove objects to expand the gallery or tweak a specific storyboard.
 
 ### Preview locally

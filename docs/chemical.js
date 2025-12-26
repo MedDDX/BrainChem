@@ -9,6 +9,7 @@ const subtitleEl = document.getElementById("page-subtitle");
 const flowTitleEl = document.getElementById("flow-title");
 const flowSubtitleEl = document.getElementById("flow-subtitle");
 const mainStructure = document.getElementById("main-structure");
+const relationshipList = document.getElementById("relationship-list");
 
 const CHEMICALS_PATH = "chemicals/chemicals.json";
 const nodeDrawer = new SmilesDrawer.Drawer({ width: 180, height: 140, padding: 6 });
@@ -61,11 +62,15 @@ function renderFlowchart(flowchart) {
     return;
   }
 
+  const nodeMap = new Map();
+
   const maxCol = Math.max(...flowchart.nodes.map((node) => node.col || 1));
   flowGrid.style.gridTemplateColumns = `repeat(${maxCol}, minmax(180px, 1fr))`;
   flowGrid.innerHTML = "";
 
   flowchart.nodes.forEach((node) => {
+    nodeMap.set(node.id, node);
+
     const card = document.createElement("article");
     card.className = "node-card";
     card.style.gridColumn = node.col;
@@ -85,17 +90,35 @@ function renderFlowchart(flowchart) {
     drawMolecule(nodeDrawer, canvas, node.smiles, node.title);
     card.appendChild(canvas);
 
+    const meta = document.createElement("div");
+    meta.className = "node-meta";
+
+    if (node.profile) {
+      const badge = document.createElement("span");
+      badge.className = "profile-pill";
+      badge.textContent = node.profile;
+      meta.appendChild(badge);
+    }
+
     if (node.detail) {
       const detail = document.createElement("p");
+      detail.className = "node-detail";
       detail.textContent = node.detail;
-      card.appendChild(detail);
+      meta.appendChild(detail);
     }
+
+    card.appendChild(meta);
 
     flowGrid.appendChild(card);
   });
 
-  requestAnimationFrame(() => drawEdges(flowchart.edges || []));
-  window.addEventListener("resize", () => drawEdges(flowchart.edges || []));
+  const edges = flowchart.edges || [];
+  requestAnimationFrame(() => {
+    drawEdges(edges);
+    renderRelationships(edges, nodeMap);
+  });
+
+  window.addEventListener("resize", () => drawEdges(edges));
 }
 
 function drawMolecule(drawer, canvas, smiles, label) {
@@ -127,9 +150,20 @@ function drawEdges(edges) {
   marker.setAttribute("orient", "auto");
   const markerPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
   markerPath.setAttribute("d", "M0,0 L10,3.5 L0,7 Z");
-  markerPath.setAttribute("fill", "#2563eb");
+  markerPath.setAttribute("fill", "#4f46e5");
   marker.appendChild(markerPath);
   defs.appendChild(marker);
+
+  const filter = document.createElementNS("http://www.w3.org/2000/svg", "filter");
+  filter.setAttribute("id", "text-shadow");
+  const dropShadow = document.createElementNS("http://www.w3.org/2000/svg", "feDropShadow");
+  dropShadow.setAttribute("dx", "0");
+  dropShadow.setAttribute("dy", "0");
+  dropShadow.setAttribute("stdDeviation", "2");
+  dropShadow.setAttribute("flood-color", "#e2e8f0");
+  dropShadow.setAttribute("flood-opacity", "0.9");
+  filter.appendChild(dropShadow);
+  defs.appendChild(filter);
   flowEdges.appendChild(defs);
 
   edges.forEach((edge) => {
@@ -148,28 +182,83 @@ function drawEdges(edges) {
       y: toRect.top - bounds.top + toRect.height / 2,
     };
 
-    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-    line.setAttribute("x1", start.x);
-    line.setAttribute("y1", start.y);
-    line.setAttribute("x2", end.x);
-    line.setAttribute("y2", end.y);
-    line.setAttribute("stroke", "#2563eb");
-    line.setAttribute("stroke-width", "2");
-    line.setAttribute("marker-end", "url(#arrowhead)");
-    line.setAttribute("stroke-linecap", "round");
-    flowEdges.appendChild(line);
+    const curvature = Math.max(40, Math.abs(end.x - start.x) / 2);
+    const control1 = {
+      x: start.x + (end.x - start.x) / 2,
+      y: start.y - curvature,
+    };
+    const control2 = {
+      x: start.x + (end.x - start.x) / 2,
+      y: end.y - curvature,
+    };
+
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute(
+      "d",
+      `M ${start.x} ${start.y} C ${control1.x} ${control1.y}, ${control2.x} ${control2.y}, ${end.x} ${end.y}`
+    );
+    path.setAttribute("fill", "none");
+    path.setAttribute("stroke", "#0ea5e9");
+    path.setAttribute("stroke-width", "3");
+    path.setAttribute("marker-end", "url(#arrowhead)");
+    path.setAttribute("stroke-linecap", "round");
+    path.setAttribute("stroke-opacity", "0.9");
+    flowEdges.appendChild(path);
+
+    const pathLength = path.getTotalLength();
+    const midpoint = path.getPointAtLength(pathLength / 2);
 
     if (edge.label) {
       const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      const midX = (start.x + end.x) / 2;
-      const midY = (start.y + end.y) / 2;
-      label.setAttribute("x", midX);
-      label.setAttribute("y", midY - 6);
+      label.setAttribute("x", midpoint.x);
+      label.setAttribute("y", midpoint.y - 6);
       label.setAttribute("text-anchor", "middle");
       label.setAttribute("fill", "#0f172a");
       label.setAttribute("font-size", "12");
       label.textContent = edge.label;
+      label.setAttribute("filter", "url(#text-shadow)");
       flowEdges.appendChild(label);
     }
+  });
+}
+
+function renderRelationships(edges, nodeMap) {
+  relationshipList.innerHTML = "";
+
+  if (!edges.length) {
+    relationshipList.innerHTML = '<p class="empty">No transformations provided.</p>';
+    return;
+  }
+
+  edges.forEach((edge) => {
+    const fromNode = nodeMap.get(edge.from);
+    const toNode = nodeMap.get(edge.to);
+    if (!fromNode || !toNode) return;
+
+    const item = document.createElement("article");
+    item.className = "relationship-card";
+
+    const headline = document.createElement("div");
+    headline.className = "relationship-line";
+    headline.innerHTML = `
+      <div class="node-chip">
+        <span class="node-name">${fromNode.title}</span>
+        <small>${fromNode.smiles}</small>
+      </div>
+      <div class="arrow-chip">${edge.label || "Change"}</div>
+      <div class="node-chip">
+        <span class="node-name">${toNode.title}</span>
+        <small>${toNode.smiles}</small>
+      </div>
+    `;
+
+    const profile = document.createElement("p");
+    profile.className = "profile-summary";
+    const profileText = toNode.profile || toNode.detail || "Profile not provided.";
+    profile.textContent = `Pharmacological profile: ${profileText}`;
+
+    item.appendChild(headline);
+    item.appendChild(profile);
+    relationshipList.appendChild(item);
   });
 }

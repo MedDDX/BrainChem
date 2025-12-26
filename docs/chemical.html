@@ -42,7 +42,15 @@
             <svg id="flow-edges" class="flow-edges"></svg>
             <div id="flow-grid" class="flow-grid" aria-label="Chemical flow chart"></div>
           </div>
-          <p class="flow-legend">Click any node to view its SMILES in the tooltip and see the drawn structure.</p>
+          <p class="flow-legend">Hover to compare structures, follow the labeled arrows to see what structural tweak drives each transition, and check the profile badges for the downstream pharmacology.</p>
+
+          <div class="flow-relationships">
+            <div class="flow-relationships__header">
+              <h3>Transformation callouts</h3>
+              <p class="lede">Each arrow summarizes the chemical edit and the resulting pharmacological profile of the destination molecule.</p>
+            </div>
+            <div id="relationship-list" class="relationship-list" aria-label="Transformation summaries"></div>
+          </div>
         </div>
       </section>
     </main>
