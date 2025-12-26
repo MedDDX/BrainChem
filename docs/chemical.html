@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chemical flow chart</title>
+    <link rel="stylesheet" href="style.css" />
+    <script
+      src="https://unpkg.com/smiles-drawer@2.0.1/dist/smiles-drawer.min.js"
+      defer
+    ></script>
+    <script src="chemical.js" defer></script>
+  </head>
+  <body>
+    <header class="hero">
+      <div class="container">
+        <p class="eyebrow">Flow chart</p>
+        <h1 id="page-title">Loading...</h1>
+        <p class="lede" id="page-subtitle"></p>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="panel">
+        <div class="detail-header">
+          <a class="back-link" href="index.html">← Back to chemicals</a>
+          <p class="empty" id="status" role="status" aria-live="polite"></p>
+        </div>
+
+        <div id="flow-content" hidden>
+          <div class="panel-header">
+            <div>
+              <h2 id="flow-title"></h2>
+              <p class="lede" id="flow-subtitle"></p>
+            </div>
+            <div>
+              <canvas id="main-structure" class="molecule" width="260" height="180" aria-label="Main structure"></canvas>
+            </div>
+          </div>
+
+          <div class="flowchart">
+            <svg id="flow-edges" class="flow-edges"></svg>
+            <div id="flow-grid" class="flow-grid" aria-label="Chemical flow chart"></div>
+          </div>
+          <p class="flow-legend">Click any node to view its SMILES in the tooltip and see the drawn structure.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <small>Rendered from the structured data in <code>chemicals/chemicals.json</code>.</small>
+      </div>
+    </footer>
+  </body>
+</html>
