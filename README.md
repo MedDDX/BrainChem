@@ -29,6 +29,7 @@ The static site reads molecules from `docs/chemicals/chemicals.json` and offers:
 - A searchable gallery that matches name, formula, or SMILES.
 - Clickable cards that open a dedicated flow-chart page for each molecule.
 - SMILES-drawn canvases for every node, with graceful fallbacks when parsing fails.
+- A single, linearized flow view that highlights each transformation: starting molecule → change label → resulting molecule with its pharmacological profile.
 
 ### Editing the dataset
 Each entry in `docs/chemicals/chemicals.json` follows this rough shape:
@@ -50,9 +51,7 @@ Each entry in `docs/chemicals/chemicals.json` follows this rough shape:
         "title": "Base",
         "smiles": "CCO",
         "detail": "Optional text",
-        "profile": "Pharmacology or behavior badge",
-        "col": 1,
-        "row": 1
+        "profile": "Pharmacology or behavior badge"
       }
     ],
     "edges": [
@@ -62,7 +61,7 @@ Each entry in `docs/chemicals/chemicals.json` follows this rough shape:
 }
 ```
 
-- `col` and `row` position nodes on the flow-chart grid; edges connect nodes and may include a label.
+- The flow chart is automatically assembled by following the edges; labels describe the differences between paired molecules.
 - `profile` surfaces the pharmacological or chemical behavior badge shown on each node and in the transformation callouts.
 - Add, edit, or remove objects to expand the gallery or tweak a specific storyboard.
 

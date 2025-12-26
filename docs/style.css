@@ -196,25 +196,44 @@ main {
   margin-top: 1rem;
 }
 
-.flow-grid {
-  display: grid;
-  gap: 1rem;
+.flowchart--linear {
   background: radial-gradient(circle at top left, #ffffff 0, #f8fafc 40%, #eef2ff 100%);
   border: 1px solid var(--border);
-  border-radius: 0.9rem;
+  border-radius: 1rem;
   padding: 1.25rem;
-  position: relative;
-  z-index: 1;
   box-shadow: inset 0 1px 0 #fff, 0 12px 28px rgba(15, 23, 42, 0.08);
 }
 
-.flow-edges {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
+.flow-sequence {
+  display: grid;
+  gap: 1rem;
+}
+
+.flow-lane {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  align-items: start;
+  gap: 0.75rem;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 0.85rem 1rem;
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.12);
+}
+
+.flow-arrow {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 800;
+  border: 1px solid rgba(79, 70, 229, 0.25);
+  justify-self: center;
+  align-self: center;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 .node-card {
@@ -227,6 +246,11 @@ main {
   box-shadow: 0 10px 28px rgba(15, 23, 42, 0.1);
   position: relative;
   transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.node-card--to {
+  border-color: rgba(79, 70, 229, 0.35);
+  box-shadow: 0 12px 32px rgba(79, 70, 229, 0.15);
 }
 
 .node-card h3 {
@@ -243,6 +267,47 @@ main {
 .node-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 14px 36px rgba(15, 23, 42, 0.16);
+}
+
+.change-card {
+  background: rgba(14, 165, 233, 0.1);
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  border-radius: 0.85rem;
+  padding: 0.75rem 0.85rem;
+  display: grid;
+  gap: 0.25rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.change-label {
+  margin: 0;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.change-detail {
+  margin: 0;
+  color: var(--muted);
+}
+
+.profile-callout {
+  grid-column: 1 / -1;
+  background: #f8fafc;
+  border: 1px dashed rgba(79, 70, 229, 0.4);
+  border-radius: 0.85rem;
+  padding: 0.75rem 0.9rem;
+  display: grid;
+  gap: 0.25rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.profile-callout h4 {
+  margin: 0;
+}
+
+.profile-callout p {
+  margin: 0;
+  color: var(--muted);
 }
 
 .node-meta {
@@ -342,7 +407,7 @@ main {
     width: 100%;
   }
 
-  .flow-grid {
-    grid-auto-flow: row;
+  .flow-lane {
+    grid-template-columns: 1fr;
   }
 }
