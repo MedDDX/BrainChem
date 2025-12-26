@@ -196,7 +196,7 @@ main {
   margin-top: 1rem;
 }
 
-.flow-track {
+.flow-grid {
   display: grid;
   gap: 1rem;
   background: radial-gradient(circle at top left, #ffffff 0, #f8fafc 40%, #eef2ff 100%);
@@ -208,46 +208,13 @@ main {
   box-shadow: inset 0 1px 0 #fff, 0 12px 28px rgba(15, 23, 42, 0.08);
 }
 
-.flow-lane {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  padding: 0.35rem 0.25rem;
-  border: 1px dashed rgba(79, 70, 229, 0.25);
-  border-radius: 0.8rem;
-  background: rgba(255, 255, 255, 0.5);
-}
-
-.flow-cell {
-  flex: 1 1 220px;
-  min-width: 220px;
-  max-width: 260px;
-}
-
-.flow-connector {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.45rem 0.65rem;
-  border-radius: 999px;
-  background: rgba(79, 70, 229, 0.08);
-  border: 1px solid rgba(79, 70, 229, 0.25);
-  color: var(--accent);
-  font-weight: 700;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
-}
-
-.change-chip {
-  padding: 0.1rem 0.35rem;
-  border-radius: 0.45rem;
-  background: #fff;
-  border: 1px solid rgba(79, 70, 229, 0.35);
-  color: var(--accent);
-}
-
-.arrow-icon {
-  font-size: 1.1rem;
+.flow-edges {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .node-card {
@@ -276,10 +243,6 @@ main {
 .node-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 14px 36px rgba(15, 23, 42, 0.16);
-}
-
-.node-card--compact {
-  height: 100%;
 }
 
 .node-meta {
@@ -367,11 +330,6 @@ main {
 .profile-summary {
   margin: 0;
   color: var(--muted);
-}
-
-.profile-summary--inline {
-  font-weight: 600;
-  color: var(--text);
 }
 
 @media (max-width: 640px) {
