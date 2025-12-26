@@ -102,13 +102,18 @@ main {
   border-radius: 0.75rem;
   padding: 1rem;
   display: grid;
-  gap: 0.4rem;
+  gap: 0.6rem;
   box-shadow: inset 0 1px 0 #f8fafc;
 }
 
 .card h3 {
   margin: 0;
   font-size: 1.1rem;
+}
+
+.card-body {
+  display: grid;
+  gap: 0.2rem;
 }
 
 .card small,
@@ -125,6 +130,26 @@ main {
   background: #f8fafc;
 }
 
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: fit-content;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.08);
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  border: 1px solid rgba(37, 99, 235, 0.25);
+}
+
+.chip:hover,
+.chip:focus-visible {
+  background: rgba(37, 99, 235, 0.14);
+  outline: none;
+}
+
 #status {
   margin-top: 0.75rem;
   color: var(--muted);
@@ -132,6 +157,76 @@ main {
 
 .footer {
   padding: 1.5rem 0 2rem;
+  color: var(--muted);
+}
+
+.detail-header {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.back-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.back-link:hover,
+.back-link:focus-visible {
+  text-decoration: underline;
+  outline: none;
+}
+
+.flowchart {
+  position: relative;
+  margin-top: 1rem;
+}
+
+.flow-grid {
+  display: grid;
+  gap: 1rem;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  position: relative;
+  z-index: 1;
+}
+
+.flow-edges {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.node-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  display: grid;
+  gap: 0.4rem;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  position: relative;
+}
+
+.node-card h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.node-card p,
+.node-card small {
+  margin: 0;
+  color: var(--muted);
+}
+
+.flow-legend {
+  margin-top: 0.5rem;
   color: var(--muted);
 }
 
@@ -143,5 +238,9 @@ main {
 
   #search {
     width: 100%;
+  }
+
+  .flow-grid {
+    grid-auto-flow: row;
   }
 }

@@ -1,23 +1,176 @@
 [
   {
-    "name": "Water",
-    "formula": "H2O",
-    "smiles": "O",
-    "description": "Universal solvent used throughout the examples for testing molecule rendering.",
-    "notes": "Try with: python draw_smiles.py \"O\""
+    "id": "ephedrine-lineage",
+    "name": "Ephedrine family",
+    "formula": "C10H15NO",
+    "smiles": "CN[C@H](C)[C@H](O)c1ccccc1",
+    "description": "Structure-activity map for phenethylamine stimulants and decongestants derived from ephedrine.",
+    "notes": "Click to see how small functional group edits shift properties across this family.",
+    "flowchart": {
+      "title": "Phenethylamine core to ephedrine and cathinone derivatives",
+      "subtitle": "Functional group edits that tune potency, polarity, and pharmacology.",
+      "nodes": [
+        {
+          "id": "pea",
+          "title": "Phenethylamine",
+          "smiles": "NCCc1ccccc1",
+          "detail": "Base scaffold for many sympathomimetics.",
+          "row": 2,
+          "col": 1
+        },
+        {
+          "id": "amph",
+          "title": "Amphetamine",
+          "smiles": "CC(N)Cc1ccccc1",
+          "detail": "Adds \u03b1-methyl for metabolic stability.",
+          "row": 2,
+          "col": 2
+        },
+        {
+          "id": "meth",
+          "title": "Methamphetamine",
+          "smiles": "CNC(C)Cc1ccccc1",
+          "detail": "N-methyl substitution boosts lipophilicity.",
+          "row": 2,
+          "col": 3
+        },
+        {
+          "id": "noreph",
+          "title": "Norephedrine / PPA",
+          "smiles": "N[C@H](CO)[C@H](C)c1ccccc1",
+          "detail": "\u03b2-hydroxyl improves polarity and oral use.",
+          "row": 3,
+          "col": 2
+        },
+        {
+          "id": "eph",
+          "title": "Ephedrine",
+          "smiles": "CN[C@H](C)[C@H](O)c1ccccc1",
+          "detail": "N-methyl \u03b2-hydroxy pair gives mixed CNS/peripheral activity.",
+          "row": 3,
+          "col": 3
+        },
+        {
+          "id": "cath",
+          "title": "Cathinone",
+          "smiles": "CC(=O)C(N)Cc1ccccc1",
+          "detail": "\u03b2-keto slows BBB penetration versus amphetamine.",
+          "row": 1,
+          "col": 2
+        },
+        {
+          "id": "mcat",
+          "title": "Methcathinone",
+          "smiles": "CNC(C)C(=O)Cc1ccccc1",
+          "detail": "Adds N-methyl to cathinone for higher potency.",
+          "row": 1,
+          "col": 3
+        },
+        {
+          "id": "mmc3",
+          "title": "3-MMC",
+          "smiles": "CNC(C)C(=O)Cc1cccc(C)c1",
+          "detail": "Ring 3-methyl subtly shifts receptor profile.",
+          "row": 1,
+          "col": 4
+        },
+        {
+          "id": "mmc4",
+          "title": "4-MMC (mephedrone)",
+          "smiles": "CNC(C)C(=O)Cc1ccc(C)cc1",
+          "detail": "Para methyl favors peripheral stimulation.",
+          "row": 2,
+          "col": 4
+        }
+      ],
+      "edges": [
+        { "from": "pea", "to": "amph", "label": "+\u03b1-methyl" },
+        { "from": "amph", "to": "meth", "label": "N-methyl" },
+        { "from": "amph", "to": "noreph", "label": "\u03b2-hydroxyl" },
+        { "from": "meth", "to": "eph", "label": "\u03b2-hydroxyl" },
+        { "from": "amph", "to": "cath", "label": "\u03b2-keto" },
+        { "from": "cath", "to": "mcat", "label": "N-methyl" },
+        { "from": "mcat", "to": "mmc3", "label": "Ring 3-methyl" },
+        { "from": "mcat", "to": "mmc4", "label": "Ring 4-methyl" }
+      ]
+    }
   },
   {
-    "name": "Acetone",
-    "formula": "C3H6O",
-    "smiles": "CC(=O)C",
-    "description": "A polar aprotic solvent that is easy to draw and useful in many organic labs.",
-    "notes": "Try with: python draw_smiles.py \"CC(=O)C\""
-  },
-  {
-    "name": "Ethanol",
+    "id": "ethanol-oxidation",
+    "name": "Ethanol oxidation ladder",
     "formula": "C2H6O",
     "smiles": "CCO",
-    "description": "A simple alcohol that demonstrates heteroatoms and branching in SMILES.",
-    "notes": "Try with: python draw_smiles.py \"CCO\""
+    "description": "Progressive oxidation and derivatization of a simple alcohol to showcase functional group interconversion.",
+    "notes": "Follow how polarity and reactivity change from alcohol to acid derivatives.",
+    "flowchart": {
+      "title": "Alcohol to carbonyl to carboxyl derivatives",
+      "subtitle": "Common lab transformations of ethanol and acetic acid.",
+      "nodes": [
+        {
+          "id": "ethanol",
+          "title": "Ethanol",
+          "smiles": "CCO",
+          "detail": "Starting primary alcohol.",
+          "row": 2,
+          "col": 1
+        },
+        {
+          "id": "acetaldehyde",
+          "title": "Acetaldehyde",
+          "smiles": "CC=O",
+          "detail": "First oxidation step.",
+          "row": 2,
+          "col": 2
+        },
+        {
+          "id": "acetic_acid",
+          "title": "Acetic acid",
+          "smiles": "CC(=O)O",
+          "detail": "Fully oxidized carboxylic acid.",
+          "row": 2,
+          "col": 3
+        },
+        {
+          "id": "acetyl_chloride",
+          "title": "Acetyl chloride",
+          "smiles": "CC(=O)Cl",
+          "detail": "Activated acyl donor.",
+          "row": 1,
+          "col": 3
+        },
+        {
+          "id": "acetamide",
+          "title": "Acetamide",
+          "smiles": "CC(=O)N",
+          "detail": "Nucleophilic acyl substitution product.",
+          "row": 3,
+          "col": 3
+        },
+        {
+          "id": "ethyl_acetate",
+          "title": "Ethyl acetate",
+          "smiles": "CCOC(=O)C",
+          "detail": "Ester from alcohol + acid.",
+          "row": 2,
+          "col": 4
+        },
+        {
+          "id": "sodium_acetate",
+          "title": "Sodium acetate",
+          "smiles": "[Na+].CC(=O)[O-]",
+          "detail": "Salt form increases water solubility.",
+          "row": 2,
+          "col": 5
+        }
+      ],
+      "edges": [
+        { "from": "ethanol", "to": "acetaldehyde", "label": "Oxidation" },
+        { "from": "acetaldehyde", "to": "acetic_acid", "label": "Oxidation" },
+        { "from": "acetic_acid", "to": "acetyl_chloride", "label": "Thionyl chloride" },
+        { "from": "acetic_acid", "to": "acetamide", "label": "Amidation" },
+        { "from": "acetic_acid", "to": "ethyl_acetate", "label": "Fischer esterification" },
+        { "from": "acetic_acid", "to": "sodium_acetate", "label": "Neutralization" }
+      ]
+    }
   }
 ]

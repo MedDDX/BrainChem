@@ -31,18 +31,29 @@ function renderCards(list) {
   list.forEach((item) => {
     const card = document.createElement("article");
     card.className = "card";
-    card.innerHTML = `
+    const info = document.createElement("div");
+    info.className = "card-body";
+    info.innerHTML = `
       <h3>${item.name}</h3>
       <small>${item.formula || "Unknown formula"}</small>
       <p>${item.description || "No description provided."}</p>
     `;
+
+    const link = document.createElement("a");
+    link.className = "chip";
+    link.href = `chemical.html?id=${encodeURIComponent(item.id)}`;
+    link.textContent = "Open flow chart →";
+    link.setAttribute("aria-label", `Open flow chart for ${item.name}`);
 
     const canvas = document.createElement("canvas");
     canvas.width = 260;
     canvas.height = 180;
     canvas.className = "molecule";
     canvas.setAttribute("aria-label", `Structure of ${item.name}`);
+
+    card.appendChild(info);
     card.appendChild(canvas);
+    card.appendChild(link);
 
     if (item.notes) {
       const notes = document.createElement("small");
